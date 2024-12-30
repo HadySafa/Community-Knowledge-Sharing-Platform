@@ -1,0 +1,76 @@
+Users:
+
+
+http://localhost/SharingPlatform/api.php/Users  --  Get all users (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Users  --  Add new user (POST REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Users/{userId} -- Get user by id (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Users/{userId} -- Change user info (PUT REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Users/{userId} -- Delete user (DELETE REQUEST METHOD)
+
+
+
+
+
+Categories:
+
+
+http://localhost/SharingPlatform/api.php/Categories  --  Get all categories (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Categories  --  Add new category (POST REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Categories/{categoryId} -- Get category by id (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Categories/{categoryId} -- Change category info (PUT REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Categories/{categoryId} -- Delete category (DELETE REQUEST METHOD)
+
+
+
+
+Posts:
+
+
+http://localhost/SharingPlatform/api.php/Posts  --  Get all posts (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts  --  Add new post (POST REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/{userId} -- Get posts posted by a specific user (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/{postId} -- Change post info (PUT REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/{postId} -- Delete post (DELETE REQUEST METHOD)
+
+
+http://localhost/SharingPlatform/api.php/Posts/Comments  --  Add new comment (POST REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/Comments/{postId}  --  Get comments on a post (GET REQUEST METHOD)
+
+
+http://localhost/SharingPlatform/api.php/Posts/Reactions  --  Add new reaction (POST REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/Reactions/{postId}  --  Get reactions on a post (GET REQUEST METHOD)
+
+
+http://localhost/SharingPlatform/api.php/Posts/Tags  --  Add new tag (POST REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/Tags/{postId}  --  Get tags of a post (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/{tagId} -- Delete tag (DELETE REQUEST METHOD)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
