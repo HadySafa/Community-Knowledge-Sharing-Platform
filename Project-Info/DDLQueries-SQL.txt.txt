@@ -1,0 +1,114 @@
+Categories:
+
+CREATE TABLE Categories (
+  Id INT PRIMARY KEY,
+  Name VARCHAR(255) NOT NULL UNIQUE
+);
+
+-----------
+
+Comments:
+
+CREATE TABLE Comments (
+  Id INT PRIMARY KEY, 
+  Comment TEXT NOT NULL, 
+  PostId INT NOT NULL, 
+  UserId INT NOT NULL, 
+  FOREIGN KEY (PostId) REFERENCES Posts(Id) ON DELETE CASCADE, 
+  FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
+);
+
+-----------
+
+Posts:
+
+CREATE TABLE Posts (
+  Id INT PRIMARY KEY, 
+  UserId INT NOT NULL,
+  Title VARCHAR(255) NOT NULL, 
+  Description TEXT NOT NULL, 
+  Link VARCHAR(255), 
+  CodeSnippet TEXT, 
+  CategoryId INT NOT NULL, 
+  FOREIGN KEY (UserID) REFERENCES Users(Id) ON DELETE CASCADE, 
+  FOREIGN KEY (CategoryId) REFERENCES Categories(Id) ON DELETE CASCADE
+);
+
+-----------
+
+Reactions:
+
+CREATE TABLE Reactions (
+  Id INT PRIMARY KEY,
+  Reaction VARCHAR(255) NOT NULL,
+  PostId INT NOT NULL,
+  UserId INT NOT NULL,
+  FOREIGN KEY (PostId) REFERENCES Posts(Id) ON DELETE CASCADE, 
+  FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
+)
+
+-----------
+
+Tags:
+
+CREATE TABLE Tags (
+  Id INT PRIMARY KEY, 
+  Name VARCHAR(255) NOT NULL, 
+  PostId INT NOT NULL, 
+  FOREIGN KEY (PostId) REFERENCES Posts(Id) ON DELETE CASCADE
+);
+
+-----------
+
+Users:
+
+CREATE TABLE Users (
+  Id INT PRIMARY KEY,
+  FullName VARCHAR(255) NOT NULL,
+  PhoneNumber VARCHAR(20) NOT NULL UNIQUE,
+  Username VARCHAR(50) NOT NULL UNIQUE,
+  Password VARCHAR(100) NOT NULL,
+  Role VARCHAR(50) NOT NULL
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
