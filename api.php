@@ -1,8 +1,8 @@
 <?php
 
-require_once "./Controllers/CategoryController.php";
-require_once "./Controllers/PostController.php";
-require_once "./Controllers/UserController.php";
+require_once "./Backend/Controllers/CategoryController.php";
+require_once "./Backend/Controllers/PostController.php";
+require_once "./Backend/Controllers/UserController.php";
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 

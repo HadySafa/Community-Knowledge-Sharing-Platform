@@ -1,6 +1,6 @@
 <?php
 
-require_once "/Users/user/OneDrive/Desktop/XAMP/htdocs/SharingPlatform/Database/DatabaseAccess.php";
+require_once "/Users/user/OneDrive/Desktop/XAMP/htdocs/SharingPlatform/Backend/Database/DatabaseAccess.php";
 
 class PostController
 {
