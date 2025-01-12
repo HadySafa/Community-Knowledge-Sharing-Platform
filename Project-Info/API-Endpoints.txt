@@ -5,6 +5,8 @@ http://localhost/SharingPlatform/api.php/Users  --  Get all users (GET REQUEST M
 
 http://localhost/SharingPlatform/api.php/Users  --  Add new user (POST REQUEST METHOD)
 
+http://localhost/SharingPlatform/api.php/Users/Login  --  Login verification (POST REQUEST METHOD)
+
 http://localhost/SharingPlatform/api.php/Users/{userId} -- Get user by id (GET REQUEST METHOD)
 
 http://localhost/SharingPlatform/api.php/Users/{userId} -- Change user info (PUT REQUEST METHOD)
