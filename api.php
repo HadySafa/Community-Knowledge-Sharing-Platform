@@ -3,8 +3,17 @@
 require_once "./Backend/Controllers/CategoryController.php";
 require_once "./Backend/Controllers/PostController.php";
 require_once "./Backend/Controllers/UserController.php";
-header("Access-Control-Allow-Origin: *");
+
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+header('Access-Control-Allow-Headers: Content-Type,Authorization');
+
 header("Content-Type: application/json; charset=UTF-8");
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $option1 = null; // must be (Users or Categories or Posts)
 $option2 = null; // must be (Comments or Reactions or Tags) or Id
@@ -30,7 +39,7 @@ if (isset($uri[3])) {
 if (isset($uri[4])) {
 
     // if not an id neither option2, stop and return false
-    if ($uri[4] != "Comments" && $uri[4] != "Reactions" && $uri[4] != "Tags" && !is_numeric($uri[4]) ) {
+    if ($uri[4] != "Comments" && $uri[4] != "Reactions" && $uri[4] != "Tags" && $uri[4] != "Login" && !is_numeric($uri[4]) ) {
         badRequestResponse();
     }
 
@@ -39,9 +48,9 @@ if (isset($uri[4])) {
         $id1 = $uri[4];
     }
 
-    // assign option2 if it is (Comments or Reactions or Tags)
+    // assign option2 if it is (Comments or Reactions or Tags or Login(Users))
     else {
-        if($uri[3] != "Posts"){
+        if($uri[3] != "Posts" && $uri[3] != "Users"){
             badRequestResponse();
         }
         $option2 = $uri[4];
@@ -57,7 +66,7 @@ if (isset($uri[4])) {
 }
 
 if ($option1 == "Users") {
-    $userController = new UserController($requestMethod, $id1);
+    $userController = new UserController($requestMethod, $id1,$option2);
     $userController->processRequest();
 } elseif ($option1 == "Posts") {
     $postController = new PostController($requestMethod, $id1, $option2, $id2);

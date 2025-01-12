@@ -97,6 +97,20 @@ class DatabaseAccess
         return $hashedPassword;
     }
 
+    // get a user by username (for login verification)
+    public function getUserByUsername($username){
+        $query = "SELECT * FROM Users WHERE Username = ?";
+
+        try {
+            $result = $this->connection->prepare($query);
+            $result->execute([$username]);
+            $data = $result->fetch(PDO::FETCH_ASSOC);
+            return $data;
+        } catch (PDOException $e) {
+            die("Error occcured: " . $e->getMessage());
+        }
+    }
+
     // categories
 
     // get categories
