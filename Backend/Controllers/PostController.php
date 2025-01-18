@@ -42,10 +42,10 @@ class PostController
                     };
                     break;
                 case 'POST':
-                    if($this->id1) $response = $this->addPost();
-                    elseif($this->option == "Comments") $response = $this->addComment();
+                    if($this->option == "Comments") $response = $this->addComment();
                     elseif($this->option == "Reactions") $response = $this->addReaction();
                     elseif($this->option == "Tags") $response = $this->addTag();
+                    else {$response = $this->addPost();}
                     break;
                 case 'PUT':
                     $response = $this->updatePost($this->id1);
