@@ -93,8 +93,8 @@ class PostController
             if (!$this->validateAddingPost($input)) {
                 return $this->unprocessableEntityResponse();
             }
-            $this->databaseAccess->addPost($input);
-            return $this->createdResponse();
+            $postId = $this->databaseAccess->addPost($input);
+            return $this->postCreatedResponse($postId);
         }
 
         // Done
@@ -104,7 +104,6 @@ class PostController
             if (!$result) {
                 return $this->notFoundResponse("Post Not Found");
             }
-
             $input = json_decode(file_get_contents('php://input'), TRUE);
             if (!$this->validateEditingPost($input)) {
                 return $this->unprocessableEntityResponse();
@@ -160,7 +159,14 @@ class PostController
             if (!$this->validateReaction($input)) {
                 return $this->unprocessableEntityResponse();
             }
-            $this->databaseAccess->makeReaction($input);
+            $count = $this->databaseAccess->getReaction($input["UserId"],$input["PostId"]);
+            if($count > 0){
+                $this->databaseAccess->removeReaction($input["UserId"],$input["PostId"]);
+                $this->databaseAccess->makeReaction($input);
+            }
+            else{
+                $this->databaseAccess->makeReaction($input);
+            }
             return $this->createdResponse();
         }
 
@@ -209,6 +215,16 @@ class PostController
             $response['status_code_header'] = 'HTTP/1.1 201 Created';
             $response['body'] = json_encode([
                 'message' => 'Post Created Successfully'
+            ]);
+            return $response;
+        }
+
+        private function postCreatedResponse($postId)
+        {
+            $response['status_code_header'] = 'HTTP/1.1 201 Created';
+            $response['body'] = json_encode([
+                'message' => 'Post Created Successfully',
+                'postId' => $postId
             ]);
             return $response;
         }

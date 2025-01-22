@@ -196,9 +196,9 @@ class DatabaseAccess
     {
 
         $query = "SELECT * 
-                  FROM (SELECT Id AS CategoryId,Name FROM Categories) AS Categories 
+                  FROM (SELECT Id AS CategoryId,Name AS CategoryName FROM Categories) AS Categories 
                   NATURAL JOIN Posts 
-                  NATURAL JOIN (SELECT Id AS UserId,FullName FROM Users) AS Users";
+                  NATURAL JOIN (SELECT Id AS UserId,Username FROM Users) AS Users";
 
         try {
             $result = $this->connection->query($query);
@@ -269,7 +269,7 @@ class DatabaseAccess
         try {
             $result = $this->connection->prepare($query);
             $result->execute([$info["UserId"], $info["Title"], $info["Description"], $info["Link"], $info["CodeSnippet"], $info["CategoryId"]]);
-            return $result;
+            return $this->connection->lastInsertId();
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());
         }
@@ -297,8 +297,8 @@ class DatabaseAccess
     {
 
         $query = "SELECT * FROM Comments 
-                  NATURAL JOIN (SELECT Id as UserId,FullName from Users) as Users 
-                  Where Id = ?";
+                  NATURAL JOIN (SELECT Id as UserId,Username from Users) as Users 
+                  Where PostId = ?";
 
         try {
             $result = $this->connection->prepare($query);
@@ -362,14 +362,29 @@ class DatabaseAccess
     }
 
     // remove a reaction on a post 
-    public function removeReaction($id)
+    public function getReaction($UserId,$PostId)
     {
 
-        $query = "DELETE FROM Reactions WHERE Id = ?";
+        $query = "SELECT * FROM Reactions WHERE (UserId = ? and PostId = ?)";
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$id]);
+            $result->execute([$UserId,$PostId]);
+            return $result->rowCount();
+        } catch (PDOException $e) {
+            die("Error occcured: " . $e->getMessage());
+        }
+    }
+
+    // remove a reaction on a post 
+    public function removeReaction($UserId,$PostId)
+    {
+
+        $query = "DELETE FROM Reactions WHERE (UserId = ? and PostId = ?)";
+
+        try {
+            $result = $this->connection->prepare($query);
+            $result->execute([$UserId,$PostId]);
             return $result;
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());
