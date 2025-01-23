@@ -213,10 +213,11 @@ class DatabaseAccess
     public function getPostsOfUser($userId)
     {
 
-        $query = "SELECT *  FROM
-                  Posts 
-                  NATURAL JOIN (SELECT Id AS UserId,FullName FROM Users) AS Users
-                  WHERE Id = ?";
+        $query = "SELECT * 
+                  FROM (SELECT Id AS CategoryId,Name AS CategoryName FROM Categories) AS Categories 
+                  NATURAL JOIN Posts 
+                  NATURAL JOIN (SELECT Id AS UserId,Username FROM Users) AS Users
+                  WHERE UserId = ?";
 
         try {
             $result = $this->connection->prepare($query);
@@ -333,8 +334,8 @@ class DatabaseAccess
     {
 
         $query = "SELECT * FROM Reactions 
-                  NATURAL JOIN (SELECT Id as UserId,FullName from Users) as Users 
-                  Where Id=?";
+                  NATURAL JOIN (SELECT Id as UserId,Username from Users) as Users 
+                  Where PostId=?";
 
         try {
             $result = $this->connection->prepare($query);
