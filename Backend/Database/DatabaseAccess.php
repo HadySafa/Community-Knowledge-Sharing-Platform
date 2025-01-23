@@ -280,11 +280,11 @@ class DatabaseAccess
     public function editPost($id, $info)
     {
 
-        $query = "UPDATE Posts SET Title = ?,Description = ?,Link = ?,CodeSnippet = ?,CategoryId = ? WHERE id = ?";
+        $query = "UPDATE Posts SET Title = ?,Description = ?,Link = ?,CodeSnippet = ? WHERE id = ?";
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$info["Title"], $info["Description"], $info["Link"], $info["CodeSnippet"], $info["CategoryId"], $id]);
+            $result->execute([$info["Title"], $info["Description"], $info["Link"], $info["CodeSnippet"], $id]);
             return $result;
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());

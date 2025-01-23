@@ -285,9 +285,11 @@ class PostController
             if (! isset($input['Description'])) {
                 return false;
             }
+            /*
             if (! isset($input['CategoryId'])) {
                 return false;
             }
+            */
             // code snippet and link can be null
             return true;
         }
