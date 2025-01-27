@@ -65,12 +65,27 @@ class DatabaseAccess
     public function updateUser($id, $info)
     {
 
-        $query = "UPDATE Users SET FullName = ?, PhoneNumber = ?, Username = ?, Password = ?,Role = ? WHERE id = ?";
+        $query = "UPDATE Users SET FullName = ?, PhoneNumber = ? WHERE id = ?";
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$info["FullName"], $info["PhoneNumber"], $info["Username"], $this->hashPassword($info["Password"]), $info["Role"], $id]);
-            return $result;
+            $result->execute([$info["FullName"], $info["PhoneNumber"], $id]);
+            return $this->getUser($id);
+        } catch (PDOException $e) {
+            die("Error occcured: " . $e->getMessage());
+        }
+    }
+
+    // update user function
+    public function updateUserPassword($id, $info)
+    {
+
+        $query = "UPDATE Users SET Password = ? WHERE id = ?";
+
+        try {
+            $result = $this->connection->prepare($query);
+            $result->execute([$this->hashPassword($info["Password"]), $id]);
+            return $this->getUser($id);
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());
         }

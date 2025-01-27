@@ -39,7 +39,7 @@ if (isset($uri[3])) {
 if (isset($uri[4])) {
 
     // if not an id neither option2, stop and return false
-    if ($uri[4] != "Comments" && $uri[4] != "Reactions" && $uri[4] != "Tags" && $uri[4] != "Login" && !is_numeric($uri[4]) ) {
+    if ($uri[4] != "Comments" && $uri[4] != "Reactions" && $uri[4] != "Tags" && $uri[4] != "Login" && $uri[4] != "Password" && !is_numeric($uri[4]) ) {
         badRequestResponse();
     }
 
@@ -66,7 +66,7 @@ if (isset($uri[4])) {
 }
 
 if ($option1 == "Users") {
-    $userController = new UserController($requestMethod, $id1,$option2);
+    $userController = new UserController($requestMethod, $id1,$option2, $id2);
     $userController->processRequest();
 } elseif ($option1 == "Posts") {
     $postController = new PostController($requestMethod, $id1, $option2, $id2);

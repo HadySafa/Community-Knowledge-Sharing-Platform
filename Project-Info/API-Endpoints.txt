@@ -11,6 +11,8 @@ http://localhost/SharingPlatform/api.php/Users/{userId} -- Get user by id (GET R
 
 http://localhost/SharingPlatform/api.php/Users/{userId} -- Change user info (PUT REQUEST METHOD)
 
+http://localhost/SharingPlatform/api.php/Users/Password/{userId} -- Change user password (PUT REQUEST METHOD)
+
 http://localhost/SharingPlatform/api.php/Users/{userId} -- Delete user (DELETE REQUEST METHOD)
 
 

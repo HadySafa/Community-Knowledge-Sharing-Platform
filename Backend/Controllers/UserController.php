@@ -12,18 +12,20 @@ class UserController
     private $requestMethod;
     private $userId;
     private $login;
+    private $password;
 
-    public function __construct($requestMethod, $userId, $login)
+    public function __construct($requestMethod, $userId, $option2,$id2)
     {
         $this->databaseAccess = new DatabaseAccess();
         $this->requestMethod = $requestMethod;
-        $this->userId = $userId;
-        $this->login = $login ? true : false;
+        $this->userId = $userId ? $userId : -1;
+        $this->userId = $id2 ? $id2 : -1;
+        $this->login = $option2 == "Login" ? true : false;
+        $this->password = $option2 == "Password" ? true : false;
     }
 
     public function processRequest()
     {
-
         switch ($this->requestMethod) {
             case 'GET':
                 if ($this->userId) {
@@ -40,7 +42,8 @@ class UserController
                 if (!$this->userId) {
                     $this->badRequestResponse();
                 }
-                $response = $this->updateUserFromRequest($this->userId);
+                if($this->password) $response = $this->updateUserPassword($this->userId);
+                else $response = $this->updateUserFromRequest($this->userId);
                 break;
             case 'DELETE':
                 if (!$this->userId) {
@@ -102,9 +105,22 @@ class UserController
         if (!$this->validateUser($input)) {
             return $this->unprocessableEntityResponse();
         }
+        $userUpdatedInfo = $this->databaseAccess->updateUser($id, $input);
+        return $this->successfullUpdate($userUpdatedInfo[0]);
+    }
 
-        $this->databaseAccess->updateUser($id, $input);
-        return $this->successfullResponse(null);
+    private function updateUserPassword($id)
+    {
+        $result = $this->databaseAccess->getUser($id);
+        if (!$result) {
+            return $this->notFoundResponse();
+        }
+        $input = json_decode(file_get_contents('php://input'), TRUE);
+        if (!$this->validatePassword($input)) {
+            return $this->unprocessableEntityResponse();
+        }
+        $this->databaseAccess->updateUserPassword($id, $input);
+        return $this->successfullPasswordUpdate();
     }
 
     private function verifyLogin() {
@@ -171,6 +187,23 @@ class UserController
         return $response;
     }
 
+    private function successfullUpdate($userInfo){
+        $response['status_code_header'] = 'HTTP/1.1 200 OK';
+        $response['body'] = json_encode([
+            'message' => 'Successfull Update',
+            'token' => $this->createJWT($userInfo)
+        ]);
+        return $response;
+    }
+
+    private function successfullPasswordUpdate(){
+        $response['status_code_header'] = 'HTTP/1.1 200 OK';
+        $response['body'] = json_encode([
+            'message' => 'Successfull Password Update'
+        ]);
+        return $response;
+    }
+
     private function unprocessableEntityResponse()
     {
         $response['status_code_header'] = 'HTTP/1.1 422 Unprocessable Entity';
@@ -200,13 +233,12 @@ class UserController
         if (! isset($input['PhoneNumber'])) {
             return false;
         }
-        if (! isset($input['Username'])) {
-            return false;
-        }
+        return true;
+    }
+
+    private function validatePassword($input)
+    {
         if (! isset($input['Password'])) {
-            return false;
-        }
-        if (! isset($input['Role'])) {
             return false;
         }
         return true;
