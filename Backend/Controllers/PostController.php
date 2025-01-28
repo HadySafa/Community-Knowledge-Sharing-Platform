@@ -10,13 +10,16 @@ class PostController
     private $id1;
     private $id2;
     private $option;
+    private $searchParameter;
 
-    public function __construct($requestMethod, $id1,$option,$id2)
+
+    public function __construct($requestMethod, $id1,$option,$id2,$searchParameter)
     {
         $this->databaseAccess = new DatabaseAccess();
         $this->requestMethod = $requestMethod;
         $this->id1 = $id1;
         $this->id2 = $id2;
+        $this->searchParameter = $searchParameter;
         $this->option = $option;
     }
 
@@ -30,6 +33,9 @@ class PostController
                     } 
                     elseif($this->option == "Comments"){
                         $response = $this->getCommentsOfPost($this->id2);
+                    }
+                    elseif($this->option == "Search"){
+                        $response = $this->getPostsBySearch($this->searchParameter);
                     }
                     elseif($this->option == "Reactions"){
                         $response = $this->getReactionsOfPost($this->id2);
@@ -95,6 +101,12 @@ class PostController
             }
             $postId = $this->databaseAccess->addPost($input);
             return $this->postCreatedResponse($postId);
+        }
+
+        private function getPostsBySearch($searchParameter){
+            $data = $this->databaseAccess->getPostsBySearch($searchParameter);
+            if($data) return $this->successfullResponse($data);
+            else return $this->notFoundResponse("Post not found.");
         }
 
         // Done

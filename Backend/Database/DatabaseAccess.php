@@ -113,7 +113,8 @@ class DatabaseAccess
     }
 
     // get a user by username (for login verification)
-    public function getUserByUsername($username){
+    public function getUserByUsername($username)
+    {
         $query = "SELECT * FROM Users WHERE Username = ?";
 
         try {
@@ -244,6 +245,27 @@ class DatabaseAccess
         }
     }
 
+    public function getPostsBySearch($givenSearchParameter)
+    {
+
+        $searchParameter = "%" . $givenSearchParameter . "%";
+
+        $query = "SELECT * 
+                  FROM (SELECT Id AS TagId, PostId AS Id,Name FROM Tags) AS Tags 
+                  NATURAL JOIN  Posts 
+                  NATURAL JOIN (SELECT Id AS UserId,Username FROM Users) AS Users
+                  WHERE Name LIKE ?";
+
+        try {
+            $result = $this->connection->prepare($query);
+            $result->execute([$searchParameter]);
+            $data = $result->fetchAll(PDO::FETCH_ASSOC);
+            return $data;
+        } catch (PDOException $e) {
+            die("Error occcured: " . $e->getMessage());
+        }
+    }
+
     public function getPostById($postId)
     {
 
@@ -334,7 +356,7 @@ class DatabaseAccess
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$info["Comment"],$info["PostId"],$info["UserId"]]);
+            $result->execute([$info["Comment"], $info["PostId"], $info["UserId"]]);
             return $result;
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());
@@ -370,7 +392,7 @@ class DatabaseAccess
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$info["Reaction"],$info["PostId"],$info["UserId"]]);
+            $result->execute([$info["Reaction"], $info["PostId"], $info["UserId"]]);
             return $result;
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());
@@ -378,14 +400,14 @@ class DatabaseAccess
     }
 
     // remove a reaction on a post 
-    public function getReaction($UserId,$PostId)
+    public function getReaction($UserId, $PostId)
     {
 
         $query = "SELECT * FROM Reactions WHERE (UserId = ? and PostId = ?)";
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$UserId,$PostId]);
+            $result->execute([$UserId, $PostId]);
             return $result->rowCount();
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());
@@ -393,14 +415,14 @@ class DatabaseAccess
     }
 
     // remove a reaction on a post 
-    public function removeReaction($UserId,$PostId)
+    public function removeReaction($UserId, $PostId)
     {
 
         $query = "DELETE FROM Reactions WHERE (UserId = ? and PostId = ?)";
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$UserId,$PostId]);
+            $result->execute([$UserId, $PostId]);
             return $result;
         } catch (PDOException $e) {
             die("Error occcured: " . $e->getMessage());
@@ -452,7 +474,7 @@ class DatabaseAccess
 
         try {
             $result = $this->connection->prepare($query);
-            $result->execute([$info["PostId"],$info["Name"]]);
+            $result->execute([$info["PostId"], $info["Name"]]);
             $data = $result->fetchAll(PDO::FETCH_ASSOC);
             return $data;
         } catch (PDOException $e) {
@@ -475,7 +497,4 @@ class DatabaseAccess
             die("Error occcured: " . $e->getMessage());
         }
     }
-
 }
-
-?>
