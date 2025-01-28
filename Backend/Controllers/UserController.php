@@ -13,22 +13,29 @@ class UserController
     private $userId;
     private $login;
     private $password;
+    private $username;
+    private $checkUsername;
 
-    public function __construct($requestMethod, $userId, $option2,$id2)
+    public function __construct($requestMethod, $userId, $option2,$id2,$username)
     {
         $this->databaseAccess = new DatabaseAccess();
         $this->requestMethod = $requestMethod;
-        $this->userId = $userId ? $userId : -1;
-        $this->userId = $id2 ? $id2 : -1;
+        $this->userId = $userId ? $userId : null;
+        $this->userId = $id2 ? $id2 : null;
         $this->login = $option2 == "Login" ? true : false;
         $this->password = $option2 == "Password" ? true : false;
+        $this->checkUsername = $option2 == "CheckUser" ? true : false;
+        $this->username = $username;
     }
 
     public function processRequest()
     {
         switch ($this->requestMethod) {
             case 'GET':
-                if ($this->userId) {
+                if($this->checkUsername){
+                    $response = $this->checkUser($this->username);
+                }
+                elseif ($this->userId) {
                     $response = $this->getUser($this->userId);
                 } else {
                     $response = $this->getAllUsers();
@@ -141,6 +148,15 @@ class UserController
         return $this->notFoundResponse(null);
     }
 
+    private function checkUser($username){
+        echo "In check user";
+        $result = $this->databaseAccess->getUserByUsername($username);
+        if (!$result) {
+            return $this->notFoundResponse();
+        }
+        return $this->userSuccessfullResponse();
+    }
+
     private function deleteUser($id)
     {
         $result = $this->databaseAccess->getUser($id);
@@ -152,6 +168,14 @@ class UserController
     }
 
     // Response Functions
+
+    private function userSuccessfullResponse()
+    {
+        echo "User successfull response";
+        $response['status_code_header'] = 'HTTP/1.1 200 OK';
+        $response['body'] = json_encode(["message"=>"user found"]);
+        return $response;
+    }
 
     private function successfullResponse($result)
     {

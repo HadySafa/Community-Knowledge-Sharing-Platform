@@ -10,68 +10,62 @@ header('Access-Control-Allow-Headers: Content-Type,Authorization');
 
 header("Content-Type: application/json; charset=UTF-8");
 
+define("ALLOWED_OPTIONS1", ["Users", "Posts", "Categories"]);
+define("ALLOWED_OPTIONS2", ["Comments", "Reactions", "Tags", "Password", "Login","CheckUser"]);
+
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
 $option1 = null; // must be (Users or Categories or Posts)
-$option2 = null; // must be (Comments or Reactions or Tags) or Id
+$option2 = null; // must be (Comments or Reactions or Tags or Password or Login or CheckUser) or Id
 $id1 = null;
 $id2 = null;
+$username = null;
 
 // get the path of the URL
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $uri = explode("/", $uri);
 
-// test first parameter
-if (isset($uri[3])) {
-
-    // assign option1 if it is (Users or Categories or Posts), otherwise stop and return an error
-    if ($uri[3] != "Users" && $uri[3] != "Posts" && $uri[3] != "Categories") {
-        badRequestResponse();
-    }
+// assign option1 if it is (Users or Categories or Posts), otherwise stop and return an error
+if (isset($uri[3]) && in_array($uri[3], ALLOWED_OPTIONS1)) {
     $option1 = $uri[3];
+} else {
+    badRequestResponse();
 }
 
 // test second and third parameter
 if (isset($uri[4])) {
 
-    // if not an id neither option2, stop and return false
-    if ($uri[4] != "Comments" && $uri[4] != "Reactions" && $uri[4] != "Tags" && $uri[4] != "Login" && $uri[4] != "Password" && !is_numeric($uri[4]) ) {
-        badRequestResponse();
-    }
-
-    // assign id if the entered parameter is id, otherwise check if it is option2
     if (is_numeric($uri[4])) {
         $id1 = $uri[4];
-    }
+    } elseif (in_array($uri[4], ALLOWED_OPTIONS2)) {
 
-    // assign option2 if it is (Comments or Reactions or Tags or Login(Users))
-    else {
-        if($uri[3] != "Posts" && $uri[3] != "Users"){
-            badRequestResponse();
-        }
         $option2 = $uri[4];
 
-        // assign id2 if passed
         if (isset($uri[5])) {
-            if (!is_numeric($uri[5])) {
-                badRequestResponse();
+            if (is_numeric($uri[5])) {
+                $id2 = $uri[5];
             }
-            $id2 = $uri[5];
+            else{
+                $username = $uri[5];
+            }
         }
+
+    } else {
+        badRequestResponse();
     }
 }
 
 if ($option1 == "Users") {
-    $userController = new UserController($requestMethod, $id1,$option2, $id2);
+    $userController = new UserController($requestMethod, $id1, $option2, $id2,$username);
     $userController->processRequest();
 } elseif ($option1 == "Posts") {
     $postController = new PostController($requestMethod, $id1, $option2, $id2);
     $postController->processRequest();
-}  elseif ($option1 == "Categories") {
+} elseif ($option1 == "Categories") {
     $categoryController = new CategoryController($requestMethod, $id1);
     $categoryController->processRequest();
 }
