@@ -18,7 +18,6 @@ class DatabaseAccess
     // get all users
     public function getAllUsers()
     {
-
         $query = "SELECT Id, FullName, PhoneNumber, Username, Role FROM Users";
 
         try {
@@ -30,10 +29,9 @@ class DatabaseAccess
         }
     }
 
-    // get a specific user
+    // get user by id
     public function getUser($id)
     {
-
         $query = "SELECT Id, FullName, PhoneNumber, Username, Role FROM Users WHERE Id = ?";
 
         try {
@@ -49,7 +47,6 @@ class DatabaseAccess
     // delete user
     public function deleteUser($id)
     {
-
         $query = "DELETE FROM Users WHERE Id = ?";
 
         try {
@@ -64,7 +61,6 @@ class DatabaseAccess
     // update user
     public function updateUser($id, $info)
     {
-
         $query = "UPDATE Users SET FullName = ?, PhoneNumber = ? WHERE id = ?";
 
         try {
@@ -76,10 +72,9 @@ class DatabaseAccess
         }
     }
 
-    // update user function
+    // update user password
     public function updateUserPassword($id, $info)
     {
-
         $query = "UPDATE Users SET Password = ? WHERE id = ?";
 
         try {
@@ -94,7 +89,6 @@ class DatabaseAccess
     // add user
     public function addUser($info)
     {
-
         $query = "INSERT INTO Users (FullName, PhoneNumber, Username, Password ,Role) VALUES (?, ?, ?, ?, ?)";
 
         try {
@@ -129,7 +123,7 @@ class DatabaseAccess
 
     // categories
 
-    // get categories
+    // get all categories
     public function getAllCategories()
     {
 
@@ -144,7 +138,7 @@ class DatabaseAccess
         }
     }
 
-    // get a specific category
+    // get category by id
     public function getCategory($id)
     {
 
@@ -193,7 +187,6 @@ class DatabaseAccess
     // update category
     public function updateCategory($id, $info)
     {
-
         $query = "UPDATE Categories SET Name = ? WHERE id = ?";
 
         try {
@@ -207,10 +200,9 @@ class DatabaseAccess
 
     // posts
 
-    // get categories
+    // get all posts
     public function getAllPosts()
     {
-
         $query = "SELECT * 
                   FROM (SELECT Id AS CategoryId,Name AS CategoryName FROM Categories) AS Categories 
                   NATURAL JOIN Posts 
@@ -225,10 +217,9 @@ class DatabaseAccess
         }
     }
 
-    // get posts posted by a specific user
+    // get posts of a specific user
     public function getPostsOfUser($userId)
     {
-
         $query = "SELECT * 
                   FROM (SELECT Id AS CategoryId,Name AS CategoryName FROM Categories) AS Categories 
                   NATURAL JOIN Posts 
@@ -245,15 +236,16 @@ class DatabaseAccess
         }
     }
 
+    // get posts based on search parameter
     public function getPostsBySearch($givenSearchParameter)
     {
-
         $searchParameter = "%" . $givenSearchParameter . "%";
 
         $query = "SELECT * 
                   FROM (SELECT Id AS TagId, PostId AS Id,Name FROM Tags) AS Tags 
                   NATURAL JOIN  Posts 
                   NATURAL JOIN (SELECT Id AS UserId,Username FROM Users) AS Users
+                  NATURAL JOIN (SELECT Id AS CategoryId,Name AS CategoryName FROM Categories) AS Categories
                   WHERE Name LIKE ?";
 
         try {
@@ -266,6 +258,24 @@ class DatabaseAccess
         }
     }
 
+    // get liked posts in decreasing order (top->least)
+    public function getTopPosts()
+    {
+        $query = "SELECT * FROM posts 
+                  NATURAL JOIN (SELECT Id AS UserId,Username FROM users) AS Users 
+                  NATURAL JOIN (SELECT Id AS CategoryId, Name AS CategoryName FROM categories) AS categories 
+                  NATURAL JOIN (SELECT PostId AS Id, COUNT(*) AS LikeCount FROM reactions WHERE Reaction = 'Like' GROUP BY PostId) AS Reactions 
+                  ORDER BY LikeCount DESC";
+        try {
+            $result = $this->connection->query($query);
+            $data = $result->fetchAll(PDO::FETCH_ASSOC);
+            return $data;
+        } catch (PDOException $e) {
+            die("Error occcured: " . $e->getMessage());
+        }
+    }
+
+    // get post by id
     public function getPostById($postId)
     {
 
@@ -276,6 +286,26 @@ class DatabaseAccess
         try {
             $result = $this->connection->prepare($query);
             $result->execute([$postId]);
+            $data = $result->fetchAll(PDO::FETCH_ASSOC);
+            return $data;
+        } catch (PDOException $e) {
+            die("Error occcured: " . $e->getMessage());
+        }
+    }
+
+    // get posts based on category id
+    public function getPostByCategoryId($categoryId)
+    {
+
+        $query = "SELECT * 
+        FROM (SELECT Id AS CategoryId,Name AS CategoryName FROM Categories) AS Categories 
+        NATURAL JOIN Posts 
+        NATURAL JOIN (SELECT Id AS UserId,Username FROM Users) AS Users
+        WHERE CategoryId = ?";
+
+        try {
+            $result = $this->connection->prepare($query);
+            $result->execute([$categoryId]);
             $data = $result->fetchAll(PDO::FETCH_ASSOC);
             return $data;
         } catch (PDOException $e) {
@@ -316,7 +346,6 @@ class DatabaseAccess
     // edit a post
     public function editPost($id, $info)
     {
-
         $query = "UPDATE Posts SET Title = ?,Description = ?,Link = ?,CodeSnippet = ? WHERE id = ?";
 
         try {
@@ -333,7 +362,6 @@ class DatabaseAccess
     // get comments of a specific post
     public function getCommentsOfPost($postId)
     {
-
         $query = "SELECT * FROM Comments 
                   NATURAL JOIN (SELECT Id as UserId,Username from Users) as Users 
                   Where PostId = ?";
@@ -351,7 +379,6 @@ class DatabaseAccess
     // add comment
     public function addComment($info)
     {
-
         $query = "INSERT INTO Comments (Comment,PostId,UserId) VALUES (?,?,?)";
 
         try {
@@ -366,10 +393,9 @@ class DatabaseAccess
 
     // reactions
 
-    // get reactions of a  specific post
+    // get reactions of a post
     public function getReactionsOfPost($postId)
     {
-
         $query = "SELECT * FROM Reactions 
                   NATURAL JOIN (SELECT Id as UserId,Username from Users) as Users 
                   Where PostId=?";
@@ -384,10 +410,9 @@ class DatabaseAccess
         }
     }
 
-    // react on a specific post 
+    // make a reaction on a post 
     public function makeReaction($info)
     {
-
         $query = "INSERT INTO Reactions (Reaction,PostId,UserId) VALUES (?,?,?)";
 
         try {
@@ -399,7 +424,7 @@ class DatabaseAccess
         }
     }
 
-    // remove a reaction on a post 
+    // get a reaction on a post made by a specific user
     public function getReaction($UserId, $PostId)
     {
 
@@ -417,7 +442,6 @@ class DatabaseAccess
     // remove a reaction on a post 
     public function removeReaction($UserId, $PostId)
     {
-
         $query = "DELETE FROM Reactions WHERE (UserId = ? and PostId = ?)";
 
         try {
@@ -432,10 +456,9 @@ class DatabaseAccess
 
     // tags
 
-    // get tags of a  specific post
+    // get tags of a post
     public function getTagsOfPost($postId)
     {
-
         $query = "SELECT * FROM Tags 
                   Where PostId = ?";
 
@@ -449,10 +472,9 @@ class DatabaseAccess
         }
     }
 
-    // remove a specific tag 
+    // remove a tag by id 
     public function removeTag($id)
     {
-
         $query = "Delete FROM Tags Where Id = ?";
 
         try {
@@ -466,10 +488,9 @@ class DatabaseAccess
     }
 
 
-    // add tags of a specific post
+    // add tag on a post
     public function addTag($info)
     {
-
         $query = "INSERT INTO Tags (PostId,Name) VALUES (?,?)";
 
         try {
@@ -482,10 +503,9 @@ class DatabaseAccess
         }
     }
 
-    // get tag by its Id
+    // get tag by Id
     public function getTagById($id)
     {
-
         $query = "SELECT * FROM Tags WHERE Id = ?";
 
         try {
@@ -497,4 +517,5 @@ class DatabaseAccess
             die("Error occcured: " . $e->getMessage());
         }
     }
+    
 }

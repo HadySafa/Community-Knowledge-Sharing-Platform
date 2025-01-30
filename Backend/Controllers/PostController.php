@@ -28,30 +28,20 @@ class PostController
 
             switch ($this->requestMethod) {
                 case 'GET':
-                    if ($this->id1) {
-                        $response = $this->getPostsOfUser($this->id1);
-                    } 
-                    elseif($this->option == "Comments"){
-                        $response = $this->getCommentsOfPost($this->id2);
-                    }
-                    elseif($this->option == "Search"){
-                        $response = $this->getPostsBySearch($this->searchParameter);
-                    }
-                    elseif($this->option == "Reactions"){
-                        $response = $this->getReactionsOfPost($this->id2);
-                    }
-                    elseif($this->option == "Tags"){
-                        $response = $this->getTagsOfPost($this->id2);
-                    }
-                    else {
-                        $response = $this->getAllPosts();
-                    };
+                    if ($this->id1) $response = $this->getPostsOfUser($this->id1);
+                    elseif($this->option == "Comments")$response = $this->getCommentsOfPost($this->id2);              
+                    elseif($this->option == "Search")$response = $this->getPostsBySearch($this->searchParameter);                 
+                    elseif($this->option == "Reactions")$response = $this->getReactionsOfPost($this->id2);                 
+                    elseif($this->option == "Top")$response = $this->getTopPosts();                  
+                    elseif($this->option == "Category")$response = $this->getPostsByCategories($this->id2);                   
+                    elseif($this->option == "Tags")$response = $this->getTagsOfPost($this->id2);                   
+                    else$response = $this->getAllPosts();                  
                     break;
                 case 'POST':
                     if($this->option == "Comments") $response = $this->addComment();
                     elseif($this->option == "Reactions") $response = $this->addReaction();
                     elseif($this->option == "Tags") $response = $this->addTag();
-                    else {$response = $this->addPost();}
+                    else $response = $this->addPost();
                     break;
                 case 'PUT':
                     $response = $this->updatePost($this->id1);
@@ -70,18 +60,22 @@ class PostController
             if ($response['body']) {
                 echo $response['body'];
             }
+
         }
 
-        // Functions implementation => Posts
+        // main functions (posts)
 
-        // Done
         private function getAllPosts()
         {
             $result = $this->databaseAccess->getAllPosts();
             return $this->successfullResponse($result);
         }
 
-        // Done
+        private function getTopPosts(){
+            $result = $this->databaseAccess->getTopPosts();
+            return $this->successfullResponse($result);
+        }
+
         private function getPostsOfUser($id)
         {
             $result = $this->databaseAccess->getUser($id);
@@ -92,7 +86,11 @@ class PostController
             return $this->successfullResponse($result);
         }
 
-        // Done
+        private function getPostsByCategories($categoryId){
+            $result = $this->databaseAccess->getPostByCategoryId($categoryId);
+            return $this->successfullResponse($result);
+        }
+
         private function addPost()
         {
             $input = json_decode(file_get_contents('php://input'), TRUE);
@@ -109,7 +107,6 @@ class PostController
             else return $this->notFoundResponse("Post not found.");
         }
 
-        // Done
         private function updatePost($id)
         {
             $result = $this->databaseAccess->getPostById($id);
@@ -135,7 +132,7 @@ class PostController
             return $this->successfullResponse(null);
         }
 
-        // Functions implementation => Comments
+        // main functions (Comments)
 
         private function getCommentsOfPost($postId){
             $result = $this->databaseAccess->getPostById($postId);
@@ -155,7 +152,7 @@ class PostController
             return $this->createdResponse();
         }
 
-        // Functions implementation => Reactions
+        // main functions (Reactions)
 
         private function getReactionsOfPost($postId){
             $result = $this->databaseAccess->getPostById($postId);
@@ -182,7 +179,7 @@ class PostController
             return $this->createdResponse();
         }
 
-        // Functions implementation => Tags
+        // main function (Tags)
 
         private function getTagsOfPost($postId){
             $result = $this->databaseAccess->getPostById($postId);
@@ -210,8 +207,6 @@ class PostController
             $this->databaseAccess->removeTag($id);
             return $this->createdResponse();
         }
-
-        
 
         // Response Functions
 
@@ -285,7 +280,6 @@ class PostController
             if (! isset($input['CategoryId'])) {
                 return false;
             }
-            // code snippet and link can be null
             return true;
         }
 
@@ -297,12 +291,6 @@ class PostController
             if (! isset($input['Description'])) {
                 return false;
             }
-            /*
-            if (! isset($input['CategoryId'])) {
-                return false;
-            }
-            */
-            // code snippet and link can be null
             return true;
         }
 

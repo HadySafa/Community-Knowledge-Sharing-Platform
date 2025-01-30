@@ -15,6 +15,7 @@ http://localhost/SharingPlatform/api.php/Users/Password/{userId} -- Change user 
 
 http://localhost/SharingPlatform/api.php/Users/{userId} -- Delete user (DELETE REQUEST METHOD)
 
+http://localhost/SharingPlatform/api.php/Users/CheckUser/{username}  --  Check if username available (GET REQUEST METHOD)
 
 
 
@@ -42,6 +43,12 @@ http://localhost/SharingPlatform/api.php/Posts  --  Get all posts (GET REQUEST M
 
 http://localhost/SharingPlatform/api.php/Posts  --  Add new post (POST REQUEST METHOD)
 
+http://localhost/SharingPlatform/api.php/Posts/Search/{search-parameter}  --  Search in tags of posts (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/Top  --  Get liked posts in descreasing order (GET REQUEST METHOD)
+
+http://localhost/SharingPlatform/api.php/Posts/Category/{categoryId}  --  Get posts of a category (GET REQUEST METHOD)
+
 http://localhost/SharingPlatform/api.php/Posts/{userId} -- Get posts posted by a specific user (GET REQUEST METHOD)
 
 http://localhost/SharingPlatform/api.php/Posts/{postId} -- Change post info (PUT REQUEST METHOD)
@@ -64,17 +71,3 @@ http://localhost/SharingPlatform/api.php/Posts/Tags  --  Add new tag (POST REQUE
 http://localhost/SharingPlatform/api.php/Posts/Tags/{postId}  --  Get tags of a post (GET REQUEST METHOD)
 
 http://localhost/SharingPlatform/api.php/Posts/{tagId} -- Delete tag (DELETE REQUEST METHOD)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

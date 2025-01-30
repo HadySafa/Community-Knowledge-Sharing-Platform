@@ -16,7 +16,7 @@ class UserController
     private $username;
     private $checkUsername;
 
-    public function __construct($requestMethod, $userId, $option2,$id2,$username)
+    public function __construct($requestMethod, $userId, $option2, $id2, $username)
     {
         $this->databaseAccess = new DatabaseAccess();
         $this->requestMethod = $requestMethod;
@@ -32,30 +32,21 @@ class UserController
     {
         switch ($this->requestMethod) {
             case 'GET':
-                if($this->checkUsername){
-                    $response = $this->checkUser($this->username);
-                }
-                elseif ($this->userId) {
-                    $response = $this->getUser($this->userId);
-                } else {
-                    $response = $this->getAllUsers();
-                };
+                if ($this->checkUsername) $response = $this->checkUser($this->username);
+                elseif ($this->userId) $response = $this->getUser($this->userId);
+                else $response = $this->getAllUsers();
                 break;
             case 'POST':
                 if ($this->login) $response = $this->verifyLogin();
                 else $response = $this->createUserFromRequest();
                 break;
             case 'PUT':
-                if (!$this->userId) {
-                    $this->badRequestResponse();
-                }
-                if($this->password) $response = $this->updateUserPassword($this->userId);
+                if (!$this->userId) $this->badRequestResponse();
+                if ($this->password) $response = $this->updateUserPassword($this->userId);
                 else $response = $this->updateUserFromRequest($this->userId);
                 break;
             case 'DELETE':
-                if (!$this->userId) {
-                    $this->badRequestResponse();
-                }
+                if (!$this->userId) $this->badRequestResponse();
                 $response = $this->deleteUser($this->userId);
                 break;
             default:
@@ -68,18 +59,17 @@ class UserController
         if ($response['body']) {
             echo $response['body'];
         }
+
     }
 
-    // Functions implementation
+    // main functions
 
-    // Done
     private function getAllUsers()
     {
         $result = $this->databaseAccess->getAllUsers();
         return $this->successfullResponse($result);
     }
 
-    // Done
     private function getUser($id)
     {
         $result = $this->databaseAccess->getUser($id);
@@ -89,7 +79,6 @@ class UserController
         return $this->successfullResponse($result);
     }
 
-    // Done
     private function createUserFromRequest()
     {
         $input = json_decode(file_get_contents('php://input'), TRUE);
@@ -100,7 +89,6 @@ class UserController
         return $this->createdResponse();
     }
 
-    // Done
     private function updateUserFromRequest($id)
     {
         $result = $this->databaseAccess->getUser($id);
@@ -130,25 +118,27 @@ class UserController
         return $this->successfullPasswordUpdate();
     }
 
-    private function verifyLogin() {
+    private function verifyLogin()
+    {
         $input = json_decode(file_get_contents('php://input'), TRUE);
         if (!$this->validateUserCredentials($input)) {
             return $this->unprocessableEntityResponse();
         }
         $username = $input["Username"];
-        $result = $this->databaseAccess->getUserByUsername($username);  
+        $result = $this->databaseAccess->getUserByUsername($username);
         if (!$result) {
             return $this->notFoundResponse();
         }
         $password = $input["Password"];
-        if(password_verify($password, $result["Password"])){
+        if (password_verify($password, $result["Password"])) {
             return $this->successfullLogin($result);
         }
-        
+
         return $this->notFoundResponse(null);
     }
 
-    private function checkUser($username){
+    private function checkUser($username)
+    {
         echo "In check user";
         $result = $this->databaseAccess->getUserByUsername($username);
         if (!$result) {
@@ -173,7 +163,7 @@ class UserController
     {
         echo "User successfull response";
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
-        $response['body'] = json_encode(["message"=>"user found"]);
+        $response['body'] = json_encode(["message" => "user found"]);
         return $response;
     }
 
@@ -202,7 +192,8 @@ class UserController
         return $response;
     }
 
-    private function successfullLogin($userInfo){
+    private function successfullLogin($userInfo)
+    {
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode([
             'message' => 'Successfull Login',
@@ -211,7 +202,8 @@ class UserController
         return $response;
     }
 
-    private function successfullUpdate($userInfo){
+    private function successfullUpdate($userInfo)
+    {
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode([
             'message' => 'Successfull Update',
@@ -220,7 +212,8 @@ class UserController
         return $response;
     }
 
-    private function successfullPasswordUpdate(){
+    private function successfullPasswordUpdate()
+    {
         $response['status_code_header'] = 'HTTP/1.1 200 OK';
         $response['body'] = json_encode([
             'message' => 'Successfull Password Update'
@@ -268,7 +261,8 @@ class UserController
         return true;
     }
 
-    private function validateUserCredentials($input){
+    private function validateUserCredentials($input)
+    {
         if (! isset($input['Username'])) {
             return false;
         }
@@ -278,25 +272,23 @@ class UserController
         return true;
     }
 
-
     // Token-Related Functions
 
-    function createJWT($userInfo) {
-
+    function createJWT($userInfo)
+    {
         $key = 'fS3&nP8oH!r9ZxD1m2W$QpVj8uX7fA6iL@tK5gT#Yb';
         $algorithm = 'HS256';
         $issuedAt = time();
-        $expirationTime = $issuedAt + 3600;  // jwt valid for 1 hour from the issued time
+        $expirationTime = $issuedAt + 3600;  // jwt valid for 1 hour
         $payload = [
             'Id' => $userInfo["Id"],
             'Username' => $userInfo["Username"],
             'PhoneNumber' => $userInfo["PhoneNumber"],
             'FullName' => $userInfo["FullName"],
             'Role' => $userInfo["Role"],
-            'iat' => $issuedAt,   // issued at time
-            'exp' => $expirationTime  // expiration time
+            'iat' => $issuedAt,   
+            'exp' => $expirationTime  
         ];
-         
         return JWT::encode($payload, $key, $algorithm);
     }
     

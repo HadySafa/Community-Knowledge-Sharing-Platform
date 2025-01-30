@@ -21,25 +21,18 @@ class CategoryController
 
         switch ($this->requestMethod) {
             case 'GET':
-                if ($this->categoryId) {
-                    $response = $this->getCategory($this->categoryId);
-                } else {
-                    $response = $this->getAllCategories();
-                };
+                if ($this->categoryId) $response = $this->getCategory($this->categoryId);
+                else $response = $this->getAllCategories();
                 break;
             case 'POST':
                 $response = $this->createCategory();
                 break;
             case 'PUT':
-                if(!$this->categoryId){
-                    $this->badRequestResponse();
-                }
-                $response = $this->updateUserFromRequest($this->categoryId);
+                if(!$this->categoryId) $this->badRequestResponse();
+                $response = $this->updateCategory($this->categoryId);
                 break;
             case 'DELETE':
-                if(!$this->categoryId){
-                    $this->badRequestResponse();
-                }
+                if(!$this->categoryId) $this->badRequestResponse();
                 $response = $this->deleteCategory($this->categoryId);
                 break;
             default:
@@ -52,16 +45,18 @@ class CategoryController
         if ($response['body']) {
             echo $response['body'];
         }
+
     }
 
-    // Done
+
+    // main functions 
+
     private function getAllCategories()
     {
         $result = $this->databaseAccess->getAllCategories();
         return $this->successfullResponse($result);
     }
 
-    // Done
     private function getCategory($id)
     {
         $result = $this->databaseAccess->getCategory($id);
@@ -71,7 +66,6 @@ class CategoryController
         return $this->successfullResponse($result);
     }
 
-    // Done
     private function createCategory()
     {
         $input = (array) json_decode(file_get_contents('php://input'), TRUE);
@@ -83,8 +77,7 @@ class CategoryController
 
     }
 
-    // Done
-    private function updateUserFromRequest($id)
+    private function updateCategory($id)
     {
         $result = $this->databaseAccess->getCategory($id);
         if (! $result) {
@@ -98,7 +91,6 @@ class CategoryController
         return $this->successfullResponse(null);
     }
 
-    // Done
     private function deleteCategory($id)
     {
         $result = $this->databaseAccess->getCategory($id);
@@ -109,7 +101,7 @@ class CategoryController
         return $this->successfullResponse(null);
     }
 
-    // Response Functions
+    // response functions
 
     private function successfullResponse($result)
     {
