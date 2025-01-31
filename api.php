@@ -28,6 +28,7 @@ $requestMethod = $_SERVER["REQUEST_METHOD"];
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $uri = explode("/", $uri);
 
+
 if (isset($uri[3]) && in_array($uri[3], ALLOWED_OPTIONS1)) {
     $option1 = $uri[3];
 } else {
@@ -72,3 +73,32 @@ function badRequestResponse()
     echo json_encode($response);
     exit();
 }
+
+/*
+function unauthorizedResponse($message)
+{
+    header('HTTP/1.1 401 Unauthorized');
+    $response = [
+        "error" => $message
+    ];
+    echo json_encode($response);
+    exit();
+}
+
+function validateJWT($jwt) {
+    try {
+
+        $decodedToken = JWT::decode($jwt, 'fS3&nP8oH!r9ZxD1m2W$QpVj8uX7fA6iL@tK5gT#Yb');
+        
+        if (isset($decodedToken->exp) && $decodedToken->exp < time()) {
+            unauthorizedResponse("Token has expired");
+        }
+
+        return true;
+
+    } catch (Exception $e) {
+        unauthorizedResponse("Invalid Token");
+    }
+}
+
+*/
