@@ -32,9 +32,9 @@ Profile Management
 
 This project uses an **API-driven architecture**.
 
-The backend serves RESTful APIs, providing endpoints for data interaction.
+- The backend serves RESTful APIs, providing endpoints for data interaction.
 
-The frontend communicates with the backend APIs to fetch, display, and manipulate data dynamically.
+- The frontend communicates with the backend APIs to fetch, display, and manipulate data dynamically.
 
 ## Tech Stack
 
