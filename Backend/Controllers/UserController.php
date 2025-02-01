@@ -1,7 +1,10 @@
 <?php
 
-require_once "/Users/user/OneDrive/Desktop/XAMP/htdocs/SharingPlatform/Backend/Database/DatabaseAccess.php";
+//require_once "/Users/user/OneDrive/Desktop/XAMP/htdocs/SharingPlatform/Backend/Database/DatabaseAccess.php";
+require_once __DIR__ . "/../Database/DatabaseAccess.php";
 require_once 'vendor/autoload.php';
+
+echo __DIR__;
 
 use \Firebase\JWT\JWT;
 
