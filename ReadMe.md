@@ -27,6 +27,15 @@ Search and Filter Options
 Profile Management
 
 - User Dashboard: A profile section where users can view their posts, comments and reactions history.
+
+## Development Approach
+
+This project uses an **API-driven architecture**.
+
+The backend serves RESTful APIs, providing endpoints for data interaction.
+
+The frontend communicates with the backend APIs to fetch, display, and manipulate data dynamically.
+
 ## Tech Stack
 
 **Backend:** PHP
@@ -62,4 +71,4 @@ Install JWT Using Composer
 ```
 ## Note
 
-The frontend part of this project is in a separate repository. Make sure to [check it out here](https://https://github.com/HadySafa/ThinkTogether-Frontend) for the complete application.
+The frontend part of this project is in a separate repository. Make sure to [check it out here](https://github.com/HadySafa/ThinkTogether-Frontend) for the complete application.
