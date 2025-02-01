@@ -62,4 +62,4 @@ Install JWT Using Composer
 ```
 ## Note
 
-The frontend part of this project is in a separate repository. Make sure to [check it out here](https://your-url-here.com) for the complete application.
+The frontend part of this project is in a separate repository. Make sure to [check it out here](https://https://github.com/HadySafa/ThinkTogether-Frontend) for the complete application.
