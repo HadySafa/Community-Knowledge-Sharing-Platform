@@ -16,12 +16,11 @@ class UserController
     private $username;
     private $checkUsername;
 
-    public function __construct($requestMethod, $userId, $option2, $id2, $username)
+    public function __construct($requestMethod, $id1, $option2, $id2, $username)
     {
         $this->databaseAccess = new DatabaseAccess();
         $this->requestMethod = $requestMethod;
-        $this->userId = $userId ? $userId : null;
-        $this->userId = $id2 ? $id2 : null;
+        $this->userId = $id1 ? $id1 : $id2;
         $this->login = $option2 == "Login" ? true : false;
         $this->password = $option2 == "Password" ? true : false;
         $this->checkUsername = $option2 == "CheckUser" ? true : false;

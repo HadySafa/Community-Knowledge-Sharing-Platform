@@ -100,5 +100,4 @@ function validateJWT($jwt) {
         unauthorizedResponse("Invalid Token");
     }
 }
-
 */
