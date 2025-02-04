@@ -62,7 +62,7 @@ Import the SQL File in XAMPP
 
 - Select the newly created database and click on the "Import" tab.
 
-- Choose the SQL file from the cloned repository and click "Go" to import it.
+- Choose the SQL file from the cloned repository (found in Design-Docs folder) and click "Go" to import it.
     
 Install JWT Using Composer
 
