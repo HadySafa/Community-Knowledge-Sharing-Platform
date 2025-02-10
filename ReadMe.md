@@ -69,6 +69,10 @@ Install JWT Using Composer
 ```bash
   composer require firebase/php-jwt
 ```
+
+## Future Work
+- Implement token-based authentication for secure user sessions.
+- Sanitize user input to prevent XSS attacks.
 ## Note
 
 The frontend part of this project is in a separate repository. Make sure to [check it out here](https://github.com/HadySafa/ThinkTogether-Frontend) for the complete application.
